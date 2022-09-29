@@ -34,8 +34,13 @@ defmodule Hangman.Impl.Game do
   end
 
   def make_move(game, guess) do
-    accept_guess(game, guess, MapSet.member?(game.used, guess))
+    accept_guess(game, guess, MapSet.member?(game.used, guess), validate(guess))
     |> return_with_tally()
+  end
+
+  defp validate(guess) do
+    <<codepoint::utf8>> = guess
+    codepoint >= 97 && codepoint <= 122
   end
 
   defp tally(game) do
@@ -47,13 +52,17 @@ defmodule Hangman.Impl.Game do
     }
   end
 
-  defp accept_guess(game, _guess, _already_used = true) do
+  defp accept_guess(game, _guess, _already_used = true, _valid) do
     %{game | game_state: :already_used}
   end
 
-  defp accept_guess(game, guess, _already_used) do
+  defp accept_guess(game, guess, _already_used, _valid = true) do
     %{game | used: MapSet.put(game.used, guess)}
     |> score_guess(Enum.member?(game.letters, guess))
+  end
+
+  defp accept_guess(game, _guess, _already_used, _valid = false) do
+    game
   end
 
   defp score_guess(game, _good_guess = true) do

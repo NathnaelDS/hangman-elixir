@@ -107,6 +107,23 @@ defmodule HangmanImplGameTest do
     |> test_sequence_of_moves()
   end
 
+  # test "can handle a sick uence of moves" do
+  #   moves = [
+  #     {"w", :good_guess},
+  #     {"i", :good_guess},
+  #     {"b", :good_guess},
+  #     {"l", :good_guess},
+  #     {"e", :won}
+  #   ]
+
+  #   game = Game.new_game("wibble")
+
+  #   for {guess, state} <- moves do
+  #     game = Game.make_move(game, guess)
+  #     assert game.game_state == state
+  #   end
+  # end
+
   def test_sequence_of_moves(script) do
     game = Game.new_game("hello")
     Enum.reduce(script, game, &check_one_move/2)
